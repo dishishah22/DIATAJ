@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>360 Video Viewer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f4f4f4;
+    }
+    .video-container {
+      position: relative;
+      width: 80%;
+      height: 80%;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .controls {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 10;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .control-button {
+      margin: 5px;
+      color: #fff;
+      background-color: #333;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .control-button:hover {
+      background-color: #555;
+    }
+    .zoom-controls {
+      display: flex;
+      align-items: center;
+    }
+    .zoom-controls button {
+      margin: 0 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="video-container">
+    <!-- Embed the video using an iframe -->
+    <iframe src="https://d360.tech/view.html?d=315-HC-CY-513" allowfullscreen></iframe>
+  </div>
+
+  <script>
+    const zoomInButton = document.getElementById('zoomIn');
+    const zoomOutButton = document.getElementById('zoomOut');
+    const fastForwardButton = document.getElementById('fastForward');
+    const rewindButton = document.getElementById('rewind');
+
+    // Zoom in and zoom out (will be applied to the iframe)
+    let zoomLevel = 1; // Default zoom level
+
+    zoomInButton.addEventListener('click', function() {
+      if (zoomLevel < 2) {
+        zoomLevel += 0.1;
+        document.querySelector('iframe').style.transform = `scale(${zoomLevel})`;
+      }
+    });
+
+    zoomOutButton.addEventListener('click', function() {
+      if (zoomLevel > 0.5) {
+        zoomLevel -= 0.1;
+        document.querySelector('iframe').style.transform = `scale(${zoomLevel})`;
+      }
+    });
+
+    // Fast forward and rewind - You cannot control an embedded iframe directly
+    // but you can adjust the behavior if the service supports custom parameters
+
+    fastForwardButton.addEventListener('click', function() {
+      alert('Fast forward is not supported for this embedded video.');
+    });
+
+    rewindButton.addEventListener('click', function() {
+      alert('Rewind is not supported for this embedded video.');
+    });
+  </script>
+
+</body>
+</html>

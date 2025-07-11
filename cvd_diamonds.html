@@ -1,0 +1,421 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Diamond Viewer</title>
+    <style>
+        body { 
+            display: flex; 
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%); 
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .viewer-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            max-width: 600px;
+        }
+        
+        .diamond-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            margin-bottom: 20px;
+            border: 3px solid #ddd;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            overflow: hidden;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.1), rgba(240,240,240,0.3));
+        }
+        
+        .diamond-image {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 350px;
+            height: 350px;
+            transform: translate(-50%, -50%);
+            object-fit: contain;
+            animation: autoRotate 8s linear infinite;
+            animation-play-state: running;
+        }
+        
+        /* Auto-rotation animation */
+        @keyframes autoRotate {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        
+        .paused {
+            animation-play-state: paused !important;
+        }
+        
+        .reverse {
+            animation-direction: reverse !important;
+        }
+        
+        .fast {
+            animation-duration: 4s !important;
+        }
+        
+        .slow {
+            animation-duration: 12s !important;
+        }
+        
+        .controls-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .control-row {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .control-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(145deg, #4a4a4a, #2d2d2d);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .control-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .control-btn:hover {
+            background: linear-gradient(145deg, #666, #444);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+        }
+        
+        .control-btn:hover::after {
+            left: 100%;
+        }
+        
+        .control-btn:active {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+        }
+        
+        .control-btn.active {
+            background: linear-gradient(145deg, #007bff, #0056b3);
+            box-shadow: 0 4px 15px rgba(0,123,255,0.4);
+        }
+        
+        /* Enhanced icons */
+        .rewind::before { content: "⏪"; }
+        .prev::before { content: "⏮"; }
+        .play::before { content: "▶"; }
+        .pause::before { content: "⏸"; }
+        .next::before { content: "⏭"; }
+        .stop::before { content: "⏹"; }
+        .info::before { content: "ℹ"; }
+        
+        .rotate::before { content: "🔄"; }
+        .zoom::before { content: "🔍"; }
+        .settings::before { content: "⚙"; }
+        .light::before { content: "💡"; }
+        .measure::before { content: "📏"; }
+        .fullscreen::before { content: "⛶"; }
+        
+        /* Status indicator */
+        .status-indicator {
+            margin-top: 12px;
+            padding: 6px 14px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 15px;
+            font-size: 13px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        /* Zoom effect */
+        .zoomed .diamond-image {
+            width: 450px;
+            height: 450px;
+        }
+    </style>
+</head>
+<body>
+    <div class="viewer-container">
+        <div class="diamond-container" id="diamondContainer">
+            <img src="cvd_diamonds.jpeg" alt="Diamond View" id="diamondImage" class="diamond-image">
+        </div>
+        
+        <div class="controls-container">
+            <!-- Top row - Playback controls -->
+            <div class="control-row">
+                <button class="control-btn rewind" onclick="handleRewind()" title="Rewind (Fast Reverse)"></button>
+                <button class="control-btn prev" onclick="handlePrevious()" title="Reverse Rotation"></button>
+                <button class="control-btn play" onclick="handlePlay()" title="Play" id="playBtn"></button>
+                <button class="control-btn pause active" onclick="handlePause()" title="Pause" id="pauseBtn" style="display:none;"></button>
+                <button class="control-btn next" onclick="handleNext()" title="Fast Forward"></button>
+                <button class="control-btn stop" onclick="handleStop()" title="Stop"></button>
+                <button class="control-btn info" onclick="handleInfo()" title="Information"></button>
+            </div>
+            
+            <!-- Bottom row - View controls -->
+            <div class="control-row">
+                <button class="control-btn rotate" onclick="handleManualRotate()" title="Manual Rotate"></button>
+                <button class="control-btn zoom" onclick="handleZoom()" title="Zoom"></button>
+                <button class="control-btn settings" onclick="handleSettings()" title="Settings"></button>
+                <button class="control-btn light" onclick="handleLighting()" title="Lighting"></button>
+                <button class="control-btn measure" onclick="handleMeasure()" title="Measure"></button>
+                <button class="control-btn fullscreen" onclick="handleFullscreen()" title="Fullscreen"></button>
+            </div>
+        </div>
+        
+        <div class="status-indicator" id="statusIndicator">Auto-rotating: Normal Speed</div>
+    </div>
+
+    <script>
+        let isPlaying = true;
+        let isReverse = false;
+        let currentSpeed = 'normal';
+        let isZoomed = false;
+        let manualRotation = 0;
+        
+        const img = document.getElementById('diamondImage');
+        const container = document.getElementById('diamondContainer');
+        const playBtn = document.getElementById('playBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const statusIndicator = document.getElementById('statusIndicator');
+        
+        // Initialize with playing state
+        playBtn.style.display = 'none';
+        pauseBtn.style.display = 'flex';
+        pauseBtn.classList.add('active');
+        
+        function updateStatus() {
+            let status = isPlaying ? 'Auto-rotating: ' : 'Paused: ';
+            if (isPlaying) {
+                if (isReverse) {
+                    status += 'Reverse ';
+                }
+                status += currentSpeed.charAt(0).toUpperCase() + currentSpeed.slice(1) + ' Speed';
+            } else {
+                status = 'Rotation Paused';
+            }
+            statusIndicator.textContent = status;
+        }
+        
+        // Playback controls
+        function handleRewind() {
+            console.log('Rewind clicked');
+            isPlaying = true;
+            isReverse = true;
+            currentSpeed = 'fast';
+            img.classList.remove('paused', 'slow');
+            img.classList.add('reverse', 'fast');
+            
+            playBtn.style.display = 'none';
+            pauseBtn.style.display = 'flex';
+            pauseBtn.classList.add('active');
+            playBtn.classList.remove('active');
+            
+            updateStatus();
+        }
+        
+        function handlePrevious() {
+            console.log('Previous clicked');
+            isPlaying = true;
+            isReverse = true;
+            currentSpeed = 'normal';
+            img.classList.remove('paused', 'fast', 'slow');
+            img.classList.add('reverse');
+            
+            playBtn.style.display = 'none';
+            pauseBtn.style.display = 'flex';
+            pauseBtn.classList.add('active');
+            playBtn.classList.remove('active');
+            
+            updateStatus();
+        }
+        
+        function handlePlay() {
+            console.log('Play clicked');
+            isPlaying = true;
+            isReverse = false;
+            currentSpeed = 'normal';
+            img.classList.remove('paused', 'reverse', 'fast', 'slow');
+            
+            playBtn.style.display = 'none';
+            pauseBtn.style.display = 'flex';
+            pauseBtn.classList.add('active');
+            playBtn.classList.remove('active');
+            
+            updateStatus();
+        }
+        
+        function handlePause() {
+            console.log('Pause clicked');
+            isPlaying = false;
+            img.classList.add('paused');
+            
+            playBtn.style.display = 'flex';
+            pauseBtn.style.display = 'none';
+            playBtn.classList.add('active');
+            pauseBtn.classList.remove('active');
+            
+            updateStatus();
+        }
+        
+        function handleNext() {
+            console.log('Next clicked');
+            isPlaying = true;
+            isReverse = false;
+            currentSpeed = 'fast';
+            img.classList.remove('paused', 'reverse', 'slow');
+            img.classList.add('fast');
+            
+            playBtn.style.display = 'none';
+            pauseBtn.style.display = 'flex';
+            pauseBtn.classList.add('active');
+            playBtn.classList.remove('active');
+            
+            updateStatus();
+        }
+        
+        function handleStop() {
+            console.log('Stop clicked');
+            isPlaying = false;
+            isReverse = false;
+            currentSpeed = 'normal';
+            img.classList.add('paused');
+            img.classList.remove('reverse', 'fast', 'slow');
+            
+            playBtn.style.display = 'flex';
+            pauseBtn.style.display = 'none';
+            playBtn.classList.add('active');
+            pauseBtn.classList.remove('active');
+            
+            updateStatus();
+        }
+        
+        function handleInfo() {
+            console.log('Info clicked');
+            alert('Diamond Information:\n\nType: CVD Diamond\nCut: Round Brilliant\nClarity: VS1\nColor: D\n\nControls:\n⏪ Fast Reverse\n⏮ Reverse\n▶ Normal Forward\n⏭ Fast Forward\n⏸ Pause\n⏹ Stop');
+        }
+        
+        // View controls
+        function handleManualRotate() {
+            console.log('Manual Rotate clicked');
+            manualRotation += 45;
+            
+            // Temporarily pause auto-rotation for manual control
+            const wasPlaying = isPlaying;
+            img.classList.add('paused');
+            
+            // Apply manual rotation
+            img.style.transform = `translate(-50%, -50%) rotate(${manualRotation}deg)`;
+            img.style.transition = 'transform 0.5s ease';
+            
+            setTimeout(() => {
+                img.style.transition = '';
+                img.style.transform = '';
+                manualRotation = 0;
+                
+                // Resume auto-rotation if it was playing
+                if (wasPlaying) {
+                    img.classList.remove('paused');
+                }
+            }, 500);
+        }
+        
+        function handleZoom() {
+            console.log('Zoom clicked');
+            isZoomed = !isZoomed;
+            
+            if (isZoomed) {
+                container.classList.add('zoomed');
+            } else {
+                container.classList.remove('zoomed');
+            }
+        }
+        
+        function handleSettings() {
+            console.log('Settings clicked');
+            const newSpeed = prompt('Choose rotation speed:\n1. Slow\n2. Normal\n3. Fast\n\nEnter 1, 2, or 3:');
+            
+            if (newSpeed === '1') {
+                currentSpeed = 'slow';
+                img.classList.remove('fast');
+                img.classList.add('slow');
+            } else if (newSpeed === '2') {
+                currentSpeed = 'normal';
+                img.classList.remove('fast', 'slow');
+            } else if (newSpeed === '3') {
+                currentSpeed = 'fast';
+                img.classList.remove('slow');
+                img.classList.add('fast');
+            }
+            
+            updateStatus();
+        }
+        
+        function handleLighting() {
+            console.log('Lighting clicked');
+            const currentBg = container.style.background;
+            
+            if (currentBg.includes('radial-gradient')) {
+                container.style.background = 'linear-gradient(135deg, rgba(240,240,240,0.2), rgba(220,220,220,0.4))';
+            } else {
+                container.style.background = 'radial-gradient(circle at center, rgba(255,255,255,0.1), rgba(240,240,240,0.3))';
+            }
+        }
+        
+        function handleMeasure() {
+            console.log('Measure clicked');
+            alert('Diamond Measurements:\n\nDiameter: 6.5mm\nDepth: 4.0mm\nTable: 57%\nCrown: 15°\nPavilion: 40.8°\nGirdle: Medium');
+        }
+        
+        function handleFullscreen() {
+            console.log('Fullscreen clicked');
+            const viewerContainer = document.querySelector('.viewer-container');
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            } else {
+                viewerContainer.requestFullscreen();
+            }
+        }
+        
+        // Initialize status
+        updateStatus();
+    </script>
+</body>
+</html>
