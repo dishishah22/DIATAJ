@@ -292,3 +292,47 @@
   new PureCounter();
 
 })()
+document.addEventListener('DOMContentLoaded', function() {
+    // Select all elements with class 'counter'
+    const counters = document.querySelectorAll('.counter');
+    
+    // Function to animate counter
+    function animateValue(obj, start, end, duration) {
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            obj.innerHTML = Math.floor(progress * (end - start) + start);
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            }
+        };
+        window.requestAnimationFrame(step);
+    }
+
+    // Intersection Observer callback
+    const handleIntersect = (entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const counter = entry.target;
+                const target = parseInt(counter.getAttribute('data-target') || counter.innerText);
+                animateValue(counter, 0, target, 2000); // 2000ms = 2 seconds duration
+                observer.unobserve(counter); // Stop observing once animation starts
+            }
+        });
+    };
+
+    // Create Intersection Observer
+    const observer = new IntersectionObserver(handleIntersect, {
+        threshold: 0.5
+    });
+
+    // Set up counters and start observing
+    counters.forEach(counter => {
+        // Store the target number as a data attribute
+        const targetNum = counter.innerText;
+        counter.setAttribute('data-target', targetNum);
+        counter.innerText = '0';
+        observer.observe(counter);
+    });
+});
