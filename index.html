@@ -887,7 +887,6 @@
       <div class="container" data-aos="fade-up">
 
         <div class="section-title">
-          <h2>Our Services</h2>
           <p>Comprehensive diamond solutions for every need</p>
         </div>
 
@@ -960,32 +959,60 @@
           </div>
         </div>
 
-        <div class="col-lg-8 mt-5 mt-lg-0">
-          <form id="whatsappForm" role="form" class="php-email-form">
-            <div class="row">
-              <div class="col-md-6 form-group">
-                <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required>
-              </div>
-              <div class="col-md-6 form-group mt-3 mt-md-0">
-                <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" required>
-              </div>
-            </div>
-            <div class="form-group mt-3">
-              <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject" required>
-            </div>
-            <div class="form-group mt-3">
-              <textarea class="form-control" name="message" rows="5" id="message" placeholder="Message" required></textarea>
-            </div>
-            <div class="my-3">
-              <div class="loading">Loading</div>
-              <div class="error-message"></div>
-              <div class="sent-message">Your message has been sent. Thank you!</div>
-            </div>
-            <div class="text-center">
-              <button type="button" onclick="sendWhatsAppMessage()">Send Message</button>
-            </div>
-          </form>
+      <div class="col-lg-8 mt-5 mt-lg-0">
+        <div class="whatsapp-contact text-center">
+          <h4>Contact Us on WhatsApp</h4>
+          <p>Click the button below to reach us directly on WhatsApp</p>
+          <a href="https://wa.me/971554338695" target="_blank" class="whatsapp-btn">
+            <i class="bi bi-whatsapp"></i> Chat with us
+          </a>
         </div>
+      </div>
+
+      <style>
+      .whatsapp-contact {
+        padding: 30px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      }
+
+      .whatsapp-contact h4 {
+        margin-bottom: 15px;
+        color: #333;
+      }
+
+      .whatsapp-contact p {
+        margin-bottom: 25px;
+        color: #666;
+      }
+
+      .whatsapp-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: #25D366;
+        color: white;
+        padding: 15px 30px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-size: 18px;
+        transition: all 0.3s ease;
+      }
+
+      .whatsapp-btn:hover {
+        background: #128C7E;
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
+      }
+
+      .whatsapp-btn i {
+        font-size: 24px;
+      }
+      </style>>
+
+
       </div>
     </div>
   </section>
@@ -1132,7 +1159,6 @@
           </div>
 
           <div class="col-lg-3 col-md-6 footer-links">
-            <h4>Our Services</h4>
             <ul>
               <li><i class="bx bx-chevron-right"></i> <a href="cvd_diamonds.html">Rough Piece</a></li>
               <li><i class="bx bx-chevron-right"></i> <a href="polish_work.html">Polish Work</a></li>
