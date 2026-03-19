@@ -43,9 +43,10 @@
 
 1. Open terminal  
 2. Navigate to project folder  
-3. Run:
-
-    python -m http.server 8000
+3. Run: 
+```bash
+python -m http.server 8000
+```
 
 4. Open browser → **http://localhost:8000**
 
@@ -53,7 +54,7 @@
 
 **Connect with Dishi Nilesh Shah:**
 
-- LinkedIn: Dishi Shah
+- LinkedIn: [Dishi Shah] (www.linkedin.com/in/dishi-shah-cse)
 
 ## License
 
